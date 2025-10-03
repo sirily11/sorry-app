@@ -56,12 +56,16 @@ export function SorryForm() {
 
       if (result.error) {
         setError(result.error);
-        setRemaining(result.remaining);
+        if (result.remaining !== undefined) {
+          setRemaining(result.remaining);
+        }
         setIsGenerating(false);
         return;
       }
 
-      setRemaining(result.remaining);
+      if (result.remaining !== undefined) {
+        setRemaining(result.remaining);
+      }
 
       // Set the cid immediately (it's available right away)
       if (result.cid) {
@@ -69,11 +73,13 @@ export function SorryForm() {
       }
 
       // Stream the response word by word
-      let fullText = '';
-      for await (const delta of readStreamableValue(result.output)) {
-        if (delta) {
-          fullText += delta;
-          setGeneratedMessage(fullText);
+      if (result.output) {
+        let fullText = '';
+        for await (const delta of readStreamableValue(result.output)) {
+          if (delta) {
+            fullText += delta;
+            setGeneratedMessage(fullText);
+          }
         }
       }
     } catch (err) {

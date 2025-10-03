@@ -25,7 +25,7 @@ export function ShareDialog({ cid, fingerprint, open, onOpenChange }: ShareDialo
       const result = await togglePublish(cid, fingerprint);
       if (result.error) {
         alert(result.error);
-      } else {
+      } else if (result.isPublic !== undefined) {
         setIsPublic(result.isPublic);
       }
     } catch (error) {
