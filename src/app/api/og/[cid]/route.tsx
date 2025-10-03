@@ -45,11 +45,11 @@ export async function GET(
           <div
             style={{
               position: "absolute",
-              top: "80px",
-              left: "120px",
-              right: "120px",
+              top: "60px",
+              left: "100px",
+              right: "100px",
               display: "flex",
-              alignItems: "center",
+              alignItems: "flex-start",
               justifyContent: "space-between",
             }}
           >
@@ -59,9 +59,8 @@ export async function GET(
                 fontSize: 180,
                 fontWeight: 900,
                 color: "#EC4899",
-                lineHeight: 1,
-                marginRight: "40px",
-                marginBottom: "-60px",
+                lineHeight: 0.8,
+                marginRight: "60px",
                 display: "flex",
                 fontFamily: "Georgia, serif",
               }}
@@ -76,6 +75,7 @@ export async function GET(
                 height: "2px",
                 background: "linear-gradient(90deg, #EC4899 0%, #9333EA 100%)",
                 display: "flex",
+                marginTop: "40px",
               }}
             />
           </div>
@@ -101,11 +101,11 @@ export async function GET(
           <div
             style={{
               position: "absolute",
-              bottom: "80px",
-              left: "120px",
-              right: "120px",
+              bottom: "60px",
+              left: "100px",
+              right: "100px",
               display: "flex",
-              alignItems: "center",
+              alignItems: "flex-end",
               justifyContent: "space-between",
             }}
           >
@@ -116,18 +116,18 @@ export async function GET(
                 height: "2px",
                 background: "linear-gradient(90deg, #EC4899 0%, #9333EA 100%)",
                 display: "flex",
+                marginBottom: "40px",
               }}
             />
 
-            {/* Large quote mark */}
+            {/* Large closing quote mark */}
             <div
               style={{
                 fontSize: 180,
                 fontWeight: 900,
                 color: "#EC4899",
-                lineHeight: 1,
-                marginLeft: "40px",
-                marginTop: "-60px",
+                lineHeight: 0.8,
+                marginLeft: "60px",
                 display: "flex",
                 fontFamily: "Georgia, serif",
               }}
