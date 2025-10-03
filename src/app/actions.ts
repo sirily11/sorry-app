@@ -44,7 +44,7 @@ export async function generateApology(fingerprint: string, scenario: string) {
   // Return cid immediately without streaming
   return {
     cid,
-    remaining: remaining - 1,
+    remaining: remaining,
   };
 }
 
