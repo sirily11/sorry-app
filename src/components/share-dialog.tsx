@@ -1,9 +1,9 @@
-'use client';
+"use client";
 
-import { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { togglePublish } from '@/app/actions';
-import { getBaseUrl } from '@/lib/utils';
+import { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { togglePublish } from "@/app/actions";
+import { getBaseUrl } from "@/lib/utils.server";
 
 interface ShareDialogProps {
   cid: string;
@@ -12,7 +12,12 @@ interface ShareDialogProps {
   onOpenChange: (open: boolean) => void;
 }
 
-export function ShareDialog({ cid, fingerprint, open, onOpenChange }: ShareDialogProps) {
+export function ShareDialog({
+  cid,
+  fingerprint,
+  open,
+  onOpenChange,
+}: ShareDialogProps) {
   const [isPublic, setIsPublic] = useState(false);
   const [copied, setCopied] = useState(false);
   const [isToggling, setIsToggling] = useState(false);
@@ -29,7 +34,7 @@ export function ShareDialog({ cid, fingerprint, open, onOpenChange }: ShareDialo
         setIsPublic(result.isPublic);
       }
     } catch (error) {
-      console.error('Failed to toggle publish:', error);
+      console.error("Failed to toggle publish:", error);
     } finally {
       setIsToggling(false);
     }
@@ -41,7 +46,7 @@ export function ShareDialog({ cid, fingerprint, open, onOpenChange }: ShareDialo
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     } catch (error) {
-      console.error('Failed to copy:', error);
+      console.error("Failed to copy:", error);
     }
   };
 
@@ -63,7 +68,9 @@ export function ShareDialog({ cid, fingerprint, open, onOpenChange }: ShareDialo
           onClick={(e) => e.stopPropagation()}
           className="bg-white rounded-lg shadow-xl max-w-md w-full p-6 space-y-4"
         >
-          <h2 className="text-xl font-bold text-gray-900">Share Your Apology</h2>
+          <h2 className="text-xl font-bold text-gray-900">
+            Share Your Apology
+          </h2>
 
           <div className="space-y-4">
             {/* Public Toggle */}
@@ -71,14 +78,16 @@ export function ShareDialog({ cid, fingerprint, open, onOpenChange }: ShareDialo
               <div>
                 <p className="font-medium text-gray-900">Make Public</p>
                 <p className="text-sm text-gray-600">
-                  {isPublic ? 'Anyone with the link can view' : 'Only you can view'}
+                  {isPublic
+                    ? "Anyone with the link can view"
+                    : "Only you can view"}
                 </p>
               </div>
               <button
                 onClick={handleTogglePublish}
                 disabled={isToggling}
                 className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
-                  isPublic ? 'bg-pink-500' : 'bg-gray-300'
+                  isPublic ? "bg-pink-500" : "bg-gray-300"
                 } disabled:opacity-50`}
               >
                 <motion.span
@@ -96,7 +105,9 @@ export function ShareDialog({ cid, fingerprint, open, onOpenChange }: ShareDialo
                 animate={{ opacity: 1, y: 0 }}
                 className="space-y-2"
               >
-                <label className="text-sm font-medium text-gray-700">Share Link</label>
+                <label className="text-sm font-medium text-gray-700">
+                  Share Link
+                </label>
                 <div className="flex gap-2">
                   <input
                     type="text"
@@ -108,7 +119,7 @@ export function ShareDialog({ cid, fingerprint, open, onOpenChange }: ShareDialo
                     onClick={handleCopyUrl}
                     className="px-4 py-2 bg-pink-500 text-white rounded-md hover:bg-pink-600 transition-colors text-sm font-medium"
                   >
-                    {copied ? '✓ Copied!' : 'Copy'}
+                    {copied ? "✓ Copied!" : "Copy"}
                   </button>
                 </div>
               </motion.div>
