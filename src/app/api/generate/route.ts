@@ -68,10 +68,20 @@ export async function POST(request: Request) {
             );
           }
 
-          // Update the message with the generated content
+          // Generate summary (first 20 words)
+          const words = fullText.trim().split(/\s+/);
+          const summary = words.length > 20
+            ? words.slice(0, 20).join(" ") + "..."
+            : fullText;
+
+          // Update the message with the generated content, title, and summary
           await db
             .update(messages)
-            .set({ content: fullText })
+            .set({
+              content: fullText,
+              title: "A Heartfelt Apology",
+              summary: summary
+            })
             .where(eq(messages.cid, cid));
 
           controller.enqueue(

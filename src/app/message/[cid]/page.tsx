@@ -31,14 +31,34 @@ export async function generateMetadata({
     };
   }
 
-  // Create description from first 20 words of message content
-  const words = message.content.split(" ");
-  const description =
-    words.length > 20 ? words.slice(0, 20).join(" ") + "..." : message.content;
+  const title = message.title || "A Heartfelt Apology";
+  const summary = message.summary || message.content;
+
+  // Get base URL for OG image
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
+  const ogImageUrl = `${baseUrl}/api/og/${cid}`;
 
   return {
-    title: "I am sorry",
-    description,
+    title,
+    description: summary,
+    openGraph: {
+      title,
+      description: summary,
+      images: [
+        {
+          url: ogImageUrl,
+          width: 1200,
+          height: 630,
+          alt: title,
+        },
+      ],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description: summary,
+      images: [ogImageUrl],
+    },
   };
 }
 
