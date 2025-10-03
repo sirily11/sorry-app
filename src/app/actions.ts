@@ -1,7 +1,5 @@
 "use server";
 
-import { streamText } from "ai";
-import { createStreamableValue } from "@ai-sdk/rsc";
 import { eq } from "drizzle-orm";
 import { db } from "@/lib/db";
 import { messages } from "@/lib/db/schema";
@@ -17,10 +15,6 @@ export async function generateApology(fingerprint: string, scenario: string) {
     return { error: "Scenario is required" };
   }
 
-  if (process.env.AI_MODEL_NAME === "") {
-    return { error: "AI model name is required" };
-  }
-
   // Check rate limit
   const { success, remaining } = await ratelimit.limit(fingerprint);
 
@@ -31,11 +25,11 @@ export async function generateApology(fingerprint: string, scenario: string) {
     };
   }
 
-  // Create a message record first to get the cid
+  // Create a message record to get the cid
   const [messageRecord] = await db
     .insert(messages)
     .values({
-      content: "", // Will be updated after generation
+      content: "", // Will be updated by the API route
       scenario,
       fingerprint,
       isPublic: false,
@@ -47,39 +41,8 @@ export async function generateApology(fingerprint: string, scenario: string) {
   // Set auth cookie immediately
   await setAuthCookie(fingerprint);
 
-  // Create streamable value for the text
-  const stream = createStreamableValue("");
-
-  // Generate the apology message
-  (async () => {
-    try {
-      const { textStream } = streamText({
-        model: process.env.AI_MODEL_NAME!,
-        system: `You are a heartfelt apology writer. Create sincere, thoughtful apology messages for people who want to say sorry to their girlfriend. The apology should be genuine, take responsibility, show understanding, and express commitment to do better. Keep it concise but meaningful (2-3 paragraphs max). Keep it human like.`,
-        prompt: `Write a sincere apology message based on this situation: ${scenario}`,
-      });
-
-      let fullText = "";
-      for await (const delta of textStream) {
-        fullText += delta;
-        stream.update(delta);
-      }
-
-      stream.done();
-
-      // Update the message with the generated content
-      await db
-        .update(messages)
-        .set({ content: fullText })
-        .where(eq(messages.cid, cid));
-    } catch (error) {
-      console.error("Error in generateApology:", error);
-      stream.error(error);
-    }
-  })();
-
+  // Return cid immediately without streaming
   return {
-    output: stream.value,
     cid,
     remaining: remaining - 1,
   };
@@ -124,4 +87,32 @@ export async function getRemainingGenerations(fingerprint: string) {
 
 export async function getRateLimitMax() {
   return { max: RATE_LIMIT_MAX };
+}
+
+export async function getMessageForSession(cid: string, fingerprint: string) {
+  // Verify the user has a valid auth cookie
+  const isAuthenticated = await verifyAuthCookie(fingerprint);
+  if (!isAuthenticated) {
+    return { error: "Unauthorized - invalid session" };
+  }
+
+  // Fetch the message from database
+  const [message] = await db
+    .select()
+    .from(messages)
+    .where(eq(messages.cid, cid));
+
+  if (!message) {
+    return { error: "Message not found" };
+  }
+
+  if (message.fingerprint !== fingerprint) {
+    return { error: "Unauthorized" };
+  }
+
+  return {
+    cid: message.cid,
+    scenario: message.scenario,
+    content: message.content,
+  };
 }

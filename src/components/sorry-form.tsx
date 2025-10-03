@@ -1,27 +1,23 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import FingerprintJS from '@fingerprintjs/fingerprintjs';
-import { readStreamableValue } from '@ai-sdk/rsc';
-import { Share2 } from 'lucide-react';
 import {
   generateApology,
   getRateLimitMax,
   getRemainingGenerations,
 } from '@/app/actions';
-import { ShareDialog } from './share-dialog';
 
 export function SorryForm() {
+  const router = useRouter();
   const [fingerprint, setFingerprint] = useState<string>('');
   const [scenario, setScenario] = useState('');
-  const [generatedMessage, setGeneratedMessage] = useState('');
   const [isGenerating, setIsGenerating] = useState(false);
   const [remaining, setRemaining] = useState<number | null>(null);
   const [maxLimit, setMaxLimit] = useState<number | null>(null);
   const [error, setError] = useState('');
-  const [messageCid, setMessageCid] = useState<string>('');
-  const [showShareDialog, setShowShareDialog] = useState(false);
 
   useEffect(() => {
     // Initialize fingerprint and fetch remaining generations
@@ -48,8 +44,6 @@ export function SorryForm() {
 
     setIsGenerating(true);
     setError('');
-    setGeneratedMessage('');
-    setMessageCid('');
 
     try {
       const result = await generateApology(fingerprint, scenario);
@@ -67,33 +61,15 @@ export function SorryForm() {
         setRemaining(result.remaining);
       }
 
-      // Set the cid immediately (it's available right away)
+      // Redirect to session page with the cid
       if (result.cid) {
-        setMessageCid(result.cid);
-      }
-
-      // Stream the response word by word
-      if (result.output) {
-        let fullText = '';
-        for await (const delta of readStreamableValue(result.output)) {
-          if (delta) {
-            fullText += delta;
-            setGeneratedMessage(fullText);
-          }
-        }
+        router.push(`/session/${result.cid}`);
       }
     } catch (err) {
       setError('Failed to generate apology. Please try again.');
       console.error('Error in handleGenerate:', err);
-    } finally {
       setIsGenerating(false);
     }
-  };
-
-  const handleShare = async () => {
-    if (!generatedMessage || !fingerprint || !messageCid) return;
-
-    setShowShareDialog(true);
   };
 
   return (
@@ -184,63 +160,6 @@ export function SorryForm() {
           </motion.div>
         )}
       </AnimatePresence>
-
-      {/* Generated Message */}
-      <AnimatePresence>
-        {generatedMessage && (
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: 20 }}
-          >
-            <motion.div className="relative p-6 bg-gradient-to-br from-pink-50 to-purple-50 border border-pink-200 rounded-lg shadow-lg">
-              <div className="flex items-start justify-between gap-4 mb-3">
-                <h3 className="text-lg font-semibold text-gray-800">
-                  Your Apology
-                </h3>
-                {!isGenerating && (
-                  <motion.button
-                    initial={{ opacity: 0, scale: 0 }}
-                    animate={{ opacity: 1, scale: 1 }}
-                    whileHover={{ scale: 1.1 }}
-                    whileTap={{ scale: 0.95 }}
-                    onClick={handleShare}
-                    className="group relative p-2 rounded-full bg-pink-500 text-white hover:bg-pink-600 transition-colors"
-                    aria-label="Share this message"
-                  >
-                    <Share2 className="w-5 h-5" />
-                    <span className="absolute -bottom-10 left-1/2 -translate-x-1/2 px-2 py-1 bg-gray-900 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none">
-                      Share this message
-                    </span>
-                  </motion.button>
-                )}
-              </div>
-              <div className="text-gray-700 whitespace-pre-wrap leading-relaxed">
-                {generatedMessage}
-                {isGenerating && (
-                  <motion.span
-                    animate={{ opacity: [1, 0] }}
-                    transition={{ duration: 0.8, repeat: Infinity }}
-                    className="inline-block ml-1"
-                  >
-                    ▋
-                  </motion.span>
-                )}
-              </div>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-
-      {/* Share Dialog */}
-      {messageCid && (
-        <ShareDialog
-          cid={messageCid}
-          fingerprint={fingerprint}
-          open={showShareDialog}
-          onOpenChange={setShowShareDialog}
-        />
-      )}
     </div>
   );
 }
