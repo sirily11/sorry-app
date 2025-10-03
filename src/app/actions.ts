@@ -55,7 +55,7 @@ export async function generateApology(fingerprint: string, scenario: string) {
     try {
       const { textStream } = streamText({
         model: process.env.AI_MODEL_NAME!,
-        system: `You are a heartfelt apology writer. Create sincere, thoughtful apology messages for people who want to say sorry to their girlfriend. The apology should be genuine, take responsibility, show understanding, and express commitment to do better. Keep it concise but meaningful (2-3 paragraphs max).`,
+        system: `You are a heartfelt apology writer. Create sincere, thoughtful apology messages for people who want to say sorry to their girlfriend. The apology should be genuine, take responsibility, show understanding, and express commitment to do better. Keep it concise but meaningful (2-3 paragraphs max). Keep it human like.`,
         prompt: `Write a sincere apology message based on this situation: ${scenario}`,
       });
 
