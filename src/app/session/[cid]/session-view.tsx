@@ -21,6 +21,7 @@ export function SessionView({ cid, fingerprint, baseUrl }: SessionViewProps) {
   const [isGenerating, setIsGenerating] = useState(false);
   const [error, setError] = useState("");
   const [showShareDialog, setShowShareDialog] = useState(false);
+  const [isPublic, setIsPublic] = useState(false);
 
   useEffect(() => {
     const loadMessage = async () => {
@@ -36,6 +37,7 @@ export function SessionView({ cid, fingerprint, baseUrl }: SessionViewProps) {
 
         setScenario(result.scenario || "");
         setGeneratedMessage(result.content || "");
+        setIsPublic(result.isPublic || false);
         setIsLoading(false);
 
         // If content is empty, start streaming
@@ -287,6 +289,8 @@ export function SessionView({ cid, fingerprint, baseUrl }: SessionViewProps) {
         open={showShareDialog}
         onOpenChange={setShowShareDialog}
         baseUrl={baseUrl}
+        initialIsPublic={isPublic}
+        onPublicChange={setIsPublic}
       />
     </div>
   );

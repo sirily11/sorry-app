@@ -11,6 +11,8 @@ interface ShareDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   baseUrl: string;
+  initialIsPublic: boolean;
+  onPublicChange: (isPublic: boolean) => void;
 }
 
 export function ShareDialog({
@@ -19,10 +21,17 @@ export function ShareDialog({
   open,
   onOpenChange,
   baseUrl,
+  initialIsPublic,
+  onPublicChange,
 }: ShareDialogProps) {
-  const [isPublic, setIsPublic] = useState(false);
+  const [isPublic, setIsPublic] = useState(initialIsPublic);
   const [copied, setCopied] = useState(false);
   const [isToggling, setIsToggling] = useState(false);
+
+  // Update local state when initialIsPublic prop changes
+  useEffect(() => {
+    setIsPublic(initialIsPublic);
+  }, [initialIsPublic]);
 
   const shareUrl = `${baseUrl}/message/${cid}`;
 
@@ -34,6 +43,7 @@ export function ShareDialog({
         alert(result.error);
       } else if (result.isPublic !== undefined) {
         setIsPublic(result.isPublic);
+        onPublicChange(result.isPublic);
       }
     } catch (error) {
       console.error("Failed to toggle publish:", error);

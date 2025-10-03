@@ -114,5 +114,26 @@ export async function getMessageForSession(cid: string, fingerprint: string) {
     cid: message.cid,
     scenario: message.scenario,
     content: message.content,
+    isPublic: message.isPublic,
   };
+}
+
+export async function verifySessionOwnership(cid: string, fingerprint: string) {
+  // Fetch the message from database
+  const [message] = await db
+    .select()
+    .from(messages)
+    .where(eq(messages.cid, cid));
+
+  // If message doesn't exist, return error
+  if (!message) {
+    return { error: "Message not found", isOwner: false };
+  }
+
+  // Verify ownership - only the creator can access the session
+  if (message.fingerprint !== fingerprint) {
+    return { error: "Unauthorized", isOwner: false };
+  }
+
+  return { isOwner: true };
 }
