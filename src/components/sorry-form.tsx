@@ -46,7 +46,10 @@ export function SorryForm() {
     setError('');
 
     try {
-      const result = await generateApology(fingerprint, scenario);
+      // Get custom prompt from localStorage
+      const customPrompt = localStorage.getItem('customPrompt') || '';
+
+      const result = await generateApology(fingerprint, scenario, customPrompt);
 
       if (result.error) {
         setError(result.error);

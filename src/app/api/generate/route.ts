@@ -3,18 +3,20 @@ import { eq } from "drizzle-orm";
 import { db } from "@/lib/db";
 import { messages } from "@/lib/db/schema";
 import { NextResponse } from "next/server";
+import { verifyAuthCookie } from "@/lib/auth";
+import { cookies } from "next/headers";
 
 export const maxDuration = 30;
 
 export async function POST(request: Request) {
   try {
-    const { cid } = await request.json();
+    const { cid, customPrompt } = await request.json();
 
     if (!cid) {
       return NextResponse.json({ error: "CID is required" }, { status: 400 });
     }
 
-    // Fetch the message from database to get the scenario
+    // Fetch the message from database to get the scenario and fingerprint
     const [message] = await db
       .select()
       .from(messages)
@@ -24,6 +26,15 @@ export async function POST(request: Request) {
       return NextResponse.json(
         { error: "Message not found" },
         { status: 404 },
+      );
+    }
+
+    // Verify the user is authorized to generate for this message
+    const isAuthenticated = await verifyAuthCookie(message.fingerprint);
+    if (!isAuthenticated) {
+      return NextResponse.json(
+        { error: "Unauthorized - invalid session" },
+        { status: 401 },
       );
     }
 
@@ -54,9 +65,16 @@ export async function POST(request: Request) {
     const stream = new ReadableStream({
       async start(controller) {
         try {
+          // Build the prompt with custom instructions if provided
+          let systemPrompt = `You are a heartfelt apology writer. Create sincere, thoughtful apology messages for people who want to say sorry to their girlfriend. The apology should be genuine, take responsibility, show understanding, and express commitment to do better. Keep it concise but meaningful (2-3 paragraphs max). Keep it human like.`;
+
+          if (customPrompt && customPrompt.trim()) {
+            systemPrompt += `\n\nAdditional instructions from the user: ${customPrompt}`;
+          }
+
           const { textStream } = streamText({
             model: process.env.AI_MODEL_NAME!,
-            system: `You are a heartfelt apology writer. Create sincere, thoughtful apology messages for people who want to say sorry to their girlfriend. The apology should be genuine, take responsibility, show understanding, and express commitment to do better. Keep it concise but meaningful (2-3 paragraphs max). Keep it human like.`,
+            system: systemPrompt,
             prompt: `Write a sincere apology message based on this situation: ${scenario}`,
           });
 

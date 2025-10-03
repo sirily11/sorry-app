@@ -14,6 +14,7 @@
     "@ai-sdk/rsc": "^1.0.60",
     "@fingerprintjs/fingerprintjs": "^4.6.2",
     "@neondatabase/serverless": "^1.0.2",
+    "@radix-ui/react-dialog": "^1.1.15",
     "@upstash/ratelimit": "^2.0.6",
     "@upstash/redis": "^1.35.4",
     "ai": "^5.0.60",

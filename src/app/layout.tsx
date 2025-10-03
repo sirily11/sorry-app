@@ -13,7 +13,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Sorry App",
+  title: "The Sorry App",
   description: "Say sorry to your girlfriend",
 };
 

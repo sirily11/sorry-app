@@ -54,11 +54,14 @@ export function SessionView({ cid, fingerprint, baseUrl }: SessionViewProps) {
 
     const startStreaming = async () => {
       try {
+        // Get custom prompt from localStorage
+        const customPrompt = localStorage.getItem('customPrompt') || '';
+
         // Initiate the generation via POST
         const postResponse = await fetch("/api/generate", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ cid }),
+          body: JSON.stringify({ cid, customPrompt }),
         });
 
         if (!postResponse.ok) {
@@ -164,7 +167,7 @@ export function SessionView({ cid, fingerprint, baseUrl }: SessionViewProps) {
         {/* Header */}
         <div className="text-center mb-12">
           <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-pink-500 to-purple-600 bg-clip-text text-transparent mb-4">
-            Sorry App
+            The Sorry App
           </h1>
           <p className="text-gray-600 text-lg">
             Let AI help you craft the perfect apology

@@ -6,7 +6,7 @@ import { messages } from "@/lib/db/schema";
 import { ratelimit, RATE_LIMIT_MAX } from "@/lib/ratelimit";
 import { setAuthCookie, verifyAuthCookie } from "@/lib/auth";
 
-export async function generateApology(fingerprint: string, scenario: string) {
+export async function generateApology(fingerprint: string, scenario: string, customPrompt?: string) {
   if (fingerprint === "") {
     return { error: "Fingerprint is required" };
   }
@@ -41,10 +41,11 @@ export async function generateApology(fingerprint: string, scenario: string) {
   // Set auth cookie immediately
   await setAuthCookie(fingerprint);
 
-  // Return cid immediately without streaming
+  // Return cid and customPrompt immediately without streaming
   return {
     cid,
     remaining: remaining,
+    customPrompt,
   };
 }
 
