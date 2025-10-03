@@ -116,7 +116,7 @@ export async function GET(
                 height: "2px",
                 background: "linear-gradient(90deg, #EC4899 0%, #9333EA 100%)",
                 display: "flex",
-                marginBottom: "40px",
+                marginBottom: "80px",
               }}
             />
 
