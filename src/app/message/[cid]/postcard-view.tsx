@@ -1,6 +1,7 @@
 'use client';
 
 import { motion } from 'framer-motion';
+import { useTranslation } from 'react-i18next';
 
 interface PostcardViewProps {
   content: string;
@@ -8,6 +9,8 @@ interface PostcardViewProps {
 }
 
 export function PostcardView({ content, createdAt }: PostcardViewProps) {
+  const { t } = useTranslation('common');
+  
   return (
     <div className="min-h-screen bg-gradient-to-br from-pink-100 via-purple-100 to-blue-100 flex items-center justify-center p-4">
       <motion.div
@@ -31,7 +34,7 @@ export function PostcardView({ content, createdAt }: PostcardViewProps) {
               className="text-center mb-8"
             >
               <h1 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-pink-500 to-purple-600 bg-clip-text text-transparent mb-2">
-                A Heartfelt Apology
+                {t('postcard.title')}
               </h1>
               <div className="w-24 h-1 bg-gradient-to-r from-pink-500 to-purple-600 mx-auto rounded-full" />
             </motion.div>
@@ -86,7 +89,7 @@ export function PostcardView({ content, createdAt }: PostcardViewProps) {
           transition={{ delay: 1 }}
           className="mt-4 text-center text-sm text-gray-600"
         >
-          Created with ❤️
+          {t('postcard.created_with')}
         </motion.div>
       </motion.div>
     </div>

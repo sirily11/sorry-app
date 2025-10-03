@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useTranslation } from 'react-i18next';
 import { togglePublish } from "@/app/actions";
 import { getBaseUrl } from "@/lib/utils.server";
 
@@ -24,6 +25,7 @@ export function ShareDialog({
   initialIsPublic,
   onPublicChange,
 }: ShareDialogProps) {
+  const { t } = useTranslation('common');
   const [isPublic, setIsPublic] = useState(initialIsPublic);
   const [copied, setCopied] = useState(false);
   const [isToggling, setIsToggling] = useState(false);
@@ -81,18 +83,18 @@ export function ShareDialog({
           className="bg-white rounded-lg shadow-xl max-w-md w-full p-6 space-y-4"
         >
           <h2 className="text-xl font-bold text-gray-900">
-            Share Your Apology
+            {t('share_dialog.title')}
           </h2>
 
           <div className="space-y-4">
             {/* Public Toggle */}
             <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
               <div>
-                <p className="font-medium text-gray-900">Make Public</p>
+                <p className="font-medium text-gray-900">{t('share_dialog.make_public')}</p>
                 <p className="text-sm text-gray-600">
                   {isPublic
-                    ? "Anyone with the link can view"
-                    : "Only you can view"}
+                    ? t('share_dialog.public_description')
+                    : t('share_dialog.private_description')}
                 </p>
               </div>
               <button
@@ -118,7 +120,7 @@ export function ShareDialog({
                 className="space-y-2"
               >
                 <label className="text-sm font-medium text-gray-700">
-                  Share Link
+                  {t('share_dialog.share_link')}
                 </label>
                 <div className="flex gap-2">
                   <input
@@ -131,7 +133,7 @@ export function ShareDialog({
                     onClick={handleCopyUrl}
                     className="px-4 py-2 bg-pink-500 text-white rounded-md hover:bg-pink-600 transition-colors text-sm font-medium"
                   >
-                    {copied ? "✓ Copied!" : "Copy"}
+                    {copied ? t('share_dialog.copied') : t('share_dialog.copy')}
                   </button>
                 </div>
               </motion.div>
@@ -143,7 +145,7 @@ export function ShareDialog({
               onClick={() => onOpenChange(false)}
               className="px-4 py-2 text-gray-700 hover:text-gray-900 font-medium"
             >
-              Close
+              {t('share_dialog.close')}
             </button>
           </div>
         </motion.div>

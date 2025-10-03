@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { X } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 
 interface SettingsDialogProps {
   open: boolean;
@@ -9,6 +10,7 @@ interface SettingsDialogProps {
 }
 
 export function SettingsDialog({ open, onOpenChange }: SettingsDialogProps) {
+  const { t } = useTranslation('common');
   const [customPrompt, setCustomPrompt] = useState('');
 
   useEffect(() => {
@@ -45,11 +47,11 @@ export function SettingsDialog({ open, onOpenChange }: SettingsDialogProps) {
       <div className="relative bg-white rounded-lg shadow-xl w-full max-w-lg mx-4 p-6 z-10">
         {/* Header */}
         <div className="flex items-center justify-between mb-6">
-          <h2 className="text-2xl font-bold text-gray-900">Settings</h2>
+          <h2 className="text-2xl font-bold text-gray-900">{t('settings_dialog.title')}</h2>
           <button
             onClick={() => onOpenChange(false)}
             className="p-2 rounded-full hover:bg-gray-100 transition-colors"
-            aria-label="Close"
+            aria-label={t('settings_dialog.close')}
           >
             <X className="w-5 h-5" />
           </button>
@@ -62,16 +64,16 @@ export function SettingsDialog({ open, onOpenChange }: SettingsDialogProps) {
               htmlFor="customPrompt"
               className="block text-sm font-medium text-gray-700 mb-2"
             >
-              Custom Instructions
+              {t('settings_dialog.custom_instructions')}
             </label>
             <p className="text-sm text-gray-500 mb-3">
-              Add specific instructions that will be used when generating your apologies.
+              {t('settings_dialog.custom_instructions_help')}
             </p>
             <textarea
               id="customPrompt"
               value={customPrompt}
               onChange={(e) => setCustomPrompt(e.target.value)}
-              placeholder="e.g., Keep it short and casual, mention flowers, be very sincere..."
+              placeholder={t('settings_dialog.custom_instructions_placeholder')}
               className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent resize-none"
               rows={6}
             />
@@ -84,20 +86,20 @@ export function SettingsDialog({ open, onOpenChange }: SettingsDialogProps) {
             onClick={handleClear}
             className="px-4 py-2 text-gray-600 hover:text-gray-900 font-medium transition-colors"
           >
-            Clear
+            {t('settings_dialog.clear')}
           </button>
           <div className="flex gap-3">
             <button
               onClick={() => onOpenChange(false)}
               className="px-4 py-2 border border-gray-300 text-gray-700 font-medium rounded-lg hover:bg-gray-50 transition-colors"
             >
-              Cancel
+              {t('settings_dialog.cancel')}
             </button>
             <button
               onClick={handleSave}
               className="px-4 py-2 bg-pink-500 text-white font-medium rounded-lg hover:bg-pink-600 transition-colors"
             >
-              Save
+              {t('settings_dialog.save')}
             </button>
           </div>
         </div>

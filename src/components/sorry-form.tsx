@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { motion, AnimatePresence } from 'framer-motion';
 import FingerprintJS from '@fingerprintjs/fingerprintjs';
+import { useTranslation } from 'react-i18next';
 import {
   generateApology,
   getRateLimitMax,
@@ -12,6 +13,7 @@ import {
 
 export function SorryForm() {
   const router = useRouter();
+  const { t } = useTranslation('common');
   const [fingerprint, setFingerprint] = useState<string>('');
   const [scenario, setScenario] = useState('');
   const [isGenerating, setIsGenerating] = useState(false);
@@ -90,11 +92,11 @@ export function SorryForm() {
               transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
               className="w-5 h-5 border-2 border-gray-300 border-t-pink-500 rounded-full"
             />
-            <p className="text-sm text-gray-600">Loading...</p>
+            <p className="text-sm text-gray-600">{t('loading')}</p>
           </div>
         ) : (
           <p className="text-sm text-gray-600">
-            Generations remaining today:{' '}
+            {t('form.remaining_today')}{' '}
             <motion.span
               key={remaining}
               initial={{ scale: 1.5, color: '#10b981' }}
@@ -123,13 +125,13 @@ export function SorryForm() {
             htmlFor="scenario"
             className="block text-sm font-medium text-gray-700 mb-2"
           >
-            What went wrong?
+            {t('form.label')}
           </label>
           <textarea
             id="scenario"
             value={scenario}
             onChange={(e) => setScenario(e.target.value)}
-            placeholder="Describe the situation... (e.g., I forgot our anniversary, I was late to dinner, etc.)"
+            placeholder={t('form.placeholder')}
             className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent resize-none"
             rows={4}
             disabled={isGenerating}
@@ -146,7 +148,7 @@ export function SorryForm() {
           }
           className="w-full px-6 py-3 bg-pink-500 text-white font-medium rounded-lg hover:bg-pink-600 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors"
         >
-          {isGenerating ? 'Generating...' : 'Generate Apology'}
+          {isGenerating ? t('form.button_generating') : t('form.button_generate')}
         </button>
       </motion.div>
 

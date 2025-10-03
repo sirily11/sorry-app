@@ -1,0 +1,53 @@
+{
+  "app_title": "道歉应用",
+  "app_subtitle": "让AI帮你打造完美的道歉",
+  "footer": "由AI驱动 · 用❤️制作",
+  "settings": "设置",
+  "loading": "加载中...",
+  "loading_session": "正在加载您的会话...",
+  "go_to_home": "返回首页",
+  
+  "form": {
+    "label": "发生了什么问题？",
+    "placeholder": "描述一下情况... (例如：我忘记了我们的纪念日，我约会迟到了，等等)",
+    "button_generate": "生成道歉",
+    "button_generating": "生成中...",
+    "remaining_today": "今日剩余生成次数：",
+    "generate_new": "生成新的道歉"
+  },
+  
+  "settings_dialog": {
+    "title": "设置",
+    "custom_instructions": "自定义说明",
+    "custom_instructions_help": "添加生成道歉时使用的具体说明。",
+    "custom_instructions_placeholder": "例如：保持简短随意，提到鲜花，要非常真诚...",
+    "clear": "清除",
+    "cancel": "取消",
+    "save": "保存",
+    "close": "关闭"
+  },
+  
+  "share_dialog": {
+    "title": "分享您的道歉",
+    "make_public": "设为公开",
+    "public_description": "任何拥有链接的人都可以查看",
+    "private_description": "仅您可以查看",
+    "share_link": "分享链接",
+    "copy": "复制",
+    "copied": "✓ 已复制！",
+    "close": "关闭"
+  },
+  
+  "session": {
+    "what_went_wrong": "发生了什么：",
+    "crafting_apology": "正在撰写您的道歉...",
+    "crafting_subtitle": "AI正在为您写一条真诚的信息",
+    "your_apology": "您的道歉",
+    "share_message": "分享此消息"
+  },
+  
+  "postcard": {
+    "title": "真诚的道歉",
+    "created_with": "用❤️创建"
+  }
+}
