@@ -1,6 +1,6 @@
-"use server";
+import "server-only";
 
-export async function getBaseUrl() {
+export function getBaseUrl() {
   if (process.env.VERCEL_PROJECT_PRODUCTION_URL) {
     return `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`;
   }

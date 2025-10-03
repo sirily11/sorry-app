@@ -1,17 +1,19 @@
-import { redirect } from 'next/navigation';
-import { cookies } from 'next/headers';
-import { createHmac } from 'crypto';
-import { SessionView } from './session-view';
+import { redirect } from "next/navigation";
+import { cookies } from "next/headers";
+import { createHmac } from "crypto";
+import { SessionView } from "./session-view";
+import { getBaseUrl } from "@/lib/utils.server";
 
 // Verify and extract fingerprint from signed token
 function verifyFingerprint(token: string): string | null {
-  const [fingerprint, signature] = token.split('.');
+  const [fingerprint, signature] = token.split(".");
   if (!fingerprint || !signature) return null;
 
-  const secret = process.env.COOKIE_SECRET || 'fallback-secret-change-in-production';
-  const hmac = createHmac('sha256', secret);
+  const secret =
+    process.env.COOKIE_SECRET || "fallback-secret-change-in-production";
+  const hmac = createHmac("sha256", secret);
   hmac.update(fingerprint);
-  const expectedSignature = hmac.digest('hex');
+  const expectedSignature = hmac.digest("hex");
 
   if (signature !== expectedSignature) return null;
   return fingerprint;
@@ -24,18 +26,20 @@ export default async function SessionPage({
 }) {
   const { cid } = await params;
   const cookieStore = await cookies();
-  const token = cookieStore.get('apology_session')?.value;
+  const token = cookieStore.get("apology_session")?.value;
 
   // If no auth cookie, redirect to home
   if (!token) {
-    redirect('/');
+    redirect("/");
   }
 
   // Extract fingerprint from signed token
   const fingerprint = verifyFingerprint(token);
   if (!fingerprint) {
-    redirect('/');
+    redirect("/");
   }
 
-  return <SessionView cid={cid} fingerprint={fingerprint} />;
+  const baseUrl = getBaseUrl();
+
+  return <SessionView cid={cid} fingerprint={fingerprint} baseUrl={baseUrl} />;
 }

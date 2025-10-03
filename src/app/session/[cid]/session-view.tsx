@@ -1,24 +1,25 @@
-'use client';
+"use client";
 
-import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Share2 } from 'lucide-react';
-import { getMessageForSession } from '@/app/actions';
-import { ShareDialog } from '@/components/share-dialog';
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { motion, AnimatePresence } from "framer-motion";
+import { Share2 } from "lucide-react";
+import { getMessageForSession } from "@/app/actions";
+import { ShareDialog } from "@/components/share-dialog";
 
 interface SessionViewProps {
   cid: string;
   fingerprint: string;
+  baseUrl: string;
 }
 
-export function SessionView({ cid, fingerprint }: SessionViewProps) {
+export function SessionView({ cid, fingerprint, baseUrl }: SessionViewProps) {
   const router = useRouter();
-  const [scenario, setScenario] = useState('');
-  const [generatedMessage, setGeneratedMessage] = useState('');
+  const [scenario, setScenario] = useState("");
+  const [generatedMessage, setGeneratedMessage] = useState("");
   const [isLoading, setIsLoading] = useState(true);
   const [isGenerating, setIsGenerating] = useState(false);
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
   const [showShareDialog, setShowShareDialog] = useState(false);
 
   useEffect(() => {
@@ -33,8 +34,8 @@ export function SessionView({ cid, fingerprint }: SessionViewProps) {
           return;
         }
 
-        setScenario(result.scenario || '');
-        setGeneratedMessage(result.content || '');
+        setScenario(result.scenario || "");
+        setGeneratedMessage(result.content || "");
         setIsLoading(false);
 
         // If content is empty, start streaming
@@ -43,8 +44,8 @@ export function SessionView({ cid, fingerprint }: SessionViewProps) {
           await startStreaming();
         }
       } catch (err) {
-        setError('Failed to load message');
-        console.error('Error loading message:', err);
+        setError("Failed to load message");
+        console.error("Error loading message:", err);
         setIsLoading(false);
       }
     };
@@ -52,63 +53,63 @@ export function SessionView({ cid, fingerprint }: SessionViewProps) {
     const startStreaming = async () => {
       try {
         // Initiate the generation via POST
-        const postResponse = await fetch('/api/generate', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+        const postResponse = await fetch("/api/generate", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ cid }),
         });
 
         if (!postResponse.ok) {
-          throw new Error('Failed to start generation');
+          throw new Error("Failed to start generation");
         }
 
         const reader = postResponse.body?.getReader();
         const decoder = new TextDecoder();
 
         if (!reader) {
-          throw new Error('No reader available');
+          throw new Error("No reader available");
         }
 
-        let fullText = '';
-        let buffer = '';
+        let fullText = "";
+        let buffer = "";
 
         while (true) {
           const { done, value } = await reader.read();
           if (done) break;
 
           buffer += decoder.decode(value, { stream: true });
-          const lines = buffer.split('\n');
+          const lines = buffer.split("\n");
 
           // Keep the last incomplete line in the buffer
-          buffer = lines.pop() || '';
+          buffer = lines.pop() || "";
 
           for (const line of lines) {
-            if (line.startsWith('data: ')) {
+            if (line.startsWith("data: ")) {
               try {
                 const data = JSON.parse(line.slice(6));
-                if (data.type === 'delta' && data.content) {
+                if (data.type === "delta" && data.content) {
                   fullText += data.content;
                   setGeneratedMessage(fullText);
-                } else if (data.type === 'done') {
+                } else if (data.type === "done") {
                   setIsGenerating(false);
-                } else if (data.type === 'error') {
-                  setError(data.error || 'Generation failed');
+                } else if (data.type === "error") {
+                  setError(data.error || "Generation failed");
                   setIsGenerating(false);
-                } else if (data.type === 'content') {
+                } else if (data.type === "content") {
                   // Complete content (already generated)
                   setGeneratedMessage(data.content);
                   setIsGenerating(false);
                 }
               } catch (e) {
                 // Skip invalid JSON
-                console.error('Failed to parse SSE data:', e);
+                console.error("Failed to parse SSE data:", e);
               }
             }
           }
         }
       } catch (err) {
-        console.error('Streaming error:', err);
-        setError('Failed to generate apology');
+        console.error("Streaming error:", err);
+        setError("Failed to generate apology");
         setIsGenerating(false);
       }
     };
@@ -117,7 +118,7 @@ export function SessionView({ cid, fingerprint }: SessionViewProps) {
   }, [cid, fingerprint]);
 
   const handleGenerateNew = () => {
-    router.push('/');
+    router.push("/");
   };
 
   const handleShare = () => {
@@ -130,7 +131,7 @@ export function SessionView({ cid, fingerprint }: SessionViewProps) {
         <div className="text-center">
           <motion.div
             animate={{ rotate: 360 }}
-            transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
+            transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
             className="w-12 h-12 border-4 border-gray-300 border-t-pink-500 rounded-full mx-auto mb-4"
           />
           <p className="text-gray-600">Loading your session...</p>
@@ -193,7 +194,11 @@ export function SessionView({ cid, fingerprint }: SessionViewProps) {
                 <div className="flex items-center gap-4">
                   <motion.div
                     animate={{ rotate: 360 }}
-                    transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
+                    transition={{
+                      duration: 1,
+                      repeat: Infinity,
+                      ease: "linear",
+                    }}
                     className="w-6 h-6 border-2 border-gray-300 border-t-pink-500 rounded-full flex-shrink-0"
                   />
                   <div>
@@ -281,6 +286,7 @@ export function SessionView({ cid, fingerprint }: SessionViewProps) {
         fingerprint={fingerprint}
         open={showShareDialog}
         onOpenChange={setShowShareDialog}
+        baseUrl={baseUrl}
       />
     </div>
   );

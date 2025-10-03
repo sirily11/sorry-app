@@ -10,6 +10,7 @@ interface ShareDialogProps {
   fingerprint: string;
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  baseUrl: string;
 }
 
 export function ShareDialog({
@@ -17,12 +18,13 @@ export function ShareDialog({
   fingerprint,
   open,
   onOpenChange,
+  baseUrl,
 }: ShareDialogProps) {
   const [isPublic, setIsPublic] = useState(false);
   const [copied, setCopied] = useState(false);
   const [isToggling, setIsToggling] = useState(false);
 
-  const shareUrl = `${getBaseUrl()}/message/${cid}`;
+  const shareUrl = `${baseUrl}/message/${cid}`;
 
   const handleTogglePublish = async () => {
     setIsToggling(true);
