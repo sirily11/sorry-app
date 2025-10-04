@@ -1,0 +1,53 @@
+{
+  "app_title": "The Sorry App",
+  "app_subtitle": "Let AI help you craft the perfect apology",
+  "footer": "Powered by AI · Made with ❤️",
+  "settings": "Settings",
+  "loading": "Loading...",
+  "loading_session": "Loading your session...",
+  "go_to_home": "Go to Home",
+  
+  "form": {
+    "label": "What went wrong?",
+    "placeholder": "Describe the situation... (e.g., I forgot our anniversary, I was late to dinner, etc.)",
+    "button_generate": "Generate Apology",
+    "button_generating": "Generating...",
+    "remaining_today": "Generations remaining today:",
+    "generate_new": "Generate New Apology"
+  },
+  
+  "settings_dialog": {
+    "title": "Settings",
+    "custom_instructions": "Custom Instructions",
+    "custom_instructions_help": "Add specific instructions that will be used when generating your apologies.",
+    "custom_instructions_placeholder": "e.g., Keep it short and casual, mention flowers, be very sincere...",
+    "clear": "Clear",
+    "cancel": "Cancel",
+    "save": "Save",
+    "close": "Close"
+  },
+  
+  "share_dialog": {
+    "title": "Share Your Apology",
+    "make_public": "Make Public",
+    "public_description": "Anyone with the link can view",
+    "private_description": "Only you can view",
+    "share_link": "Share Link",
+    "copy": "Copy",
+    "copied": "✓ Copied!",
+    "close": "Close"
+  },
+  
+  "session": {
+    "what_went_wrong": "What went wrong:",
+    "crafting_apology": "Crafting your apology...",
+    "crafting_subtitle": "AI is writing a heartfelt message for you",
+    "your_apology": "Your Apology",
+    "share_message": "Share this message"
+  },
+  
+  "postcard": {
+    "title": "A Heartfelt Apology",
+    "created_with": "Created with ❤️"
+  }
+}

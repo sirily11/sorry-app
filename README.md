@@ -7,6 +7,7 @@ An AI-powered web application that helps you craft heartfelt, sincere apology me
 - **AI-Generated Apologies**: Uses advanced AI models to create genuine, heartfelt apology messages
 - **Custom Scenarios**: Describe your situation and get a personalized apology
 - **Custom Instructions**: Add specific instructions to tailor the apology to your needs
+- **Internationalization**: Full support for multiple languages (English and Chinese Simplified)
 - **Rate Limiting**: Fair usage with 5 apologies per day per user (configurable)
 - **Session Management**: Secure fingerprint-based session tracking
 - **Public Sharing**: Option to make your apology public and share with others
@@ -29,6 +30,7 @@ An AI-powered web application that helps you craft heartfelt, sincere apology me
 - **Rate Limiting**: [Upstash Rate Limit](https://upstash.com/docs/redis/features/ratelimiting)
 - **Caching**: [Upstash Redis](https://upstash.com/)
 - **User Tracking**: FingerprintJS
+- **Internationalization**: i18next and react-i18next
 
 ## 📋 Prerequisites
 

@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { Share2 } from "lucide-react";
+import { useTranslation } from 'react-i18next';
 import { getMessageForSession } from "@/app/actions";
 import { ShareDialog } from "@/components/share-dialog";
 
@@ -15,6 +16,7 @@ interface SessionViewProps {
 
 export function SessionView({ cid, fingerprint, baseUrl }: SessionViewProps) {
   const router = useRouter();
+  const { t } = useTranslation('common');
   const [scenario, setScenario] = useState("");
   const [generatedMessage, setGeneratedMessage] = useState("");
   const [isLoading, setIsLoading] = useState(true);
@@ -139,7 +141,7 @@ export function SessionView({ cid, fingerprint, baseUrl }: SessionViewProps) {
             transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
             className="w-12 h-12 border-4 border-gray-300 border-t-pink-500 rounded-full mx-auto mb-4"
           />
-          <p className="text-gray-600">Loading your session...</p>
+          <p className="text-gray-600">{t('loading_session')}</p>
         </div>
       </div>
     );
@@ -154,7 +156,7 @@ export function SessionView({ cid, fingerprint, baseUrl }: SessionViewProps) {
             onClick={handleGenerateNew}
             className="px-6 py-3 bg-pink-500 text-white font-medium rounded-lg hover:bg-pink-600 transition-colors"
           >
-            Go to Home
+            {t('go_to_home')}
           </button>
         </div>
       </div>
@@ -167,10 +169,10 @@ export function SessionView({ cid, fingerprint, baseUrl }: SessionViewProps) {
         {/* Header */}
         <div className="text-center mb-12">
           <h1 className="text-4xl md:text-5xl font-bold bg-gradient-to-r from-pink-500 to-purple-600 bg-clip-text text-transparent mb-4">
-            The Sorry App
+            {t('app_title')}
           </h1>
           <p className="text-gray-600 text-lg">
-            Let AI help you craft the perfect apology
+            {t('app_subtitle')}
           </p>
         </div>
 
@@ -182,7 +184,7 @@ export function SessionView({ cid, fingerprint, baseUrl }: SessionViewProps) {
             className="p-6 bg-white border border-gray-200 rounded-lg shadow-sm"
           >
             <h3 className="text-sm font-medium text-gray-500 mb-2">
-              What went wrong:
+              {t('session.what_went_wrong')}
             </h3>
             <p className="text-gray-800 whitespace-pre-wrap">{scenario}</p>
           </motion.div>
@@ -208,10 +210,10 @@ export function SessionView({ cid, fingerprint, baseUrl }: SessionViewProps) {
                   />
                   <div>
                     <h3 className="text-lg font-semibold text-gray-800 mb-1">
-                      Crafting your apology...
+                      {t('session.crafting_apology')}
                     </h3>
                     <p className="text-sm text-gray-600">
-                      AI is writing a heartfelt message for you
+                      {t('session.crafting_subtitle')}
                     </p>
                   </div>
                 </div>
@@ -226,7 +228,7 @@ export function SessionView({ cid, fingerprint, baseUrl }: SessionViewProps) {
                 <motion.div className="relative p-6 bg-gradient-to-br from-pink-50 to-purple-50 border border-pink-200 rounded-lg shadow-lg">
                   <div className="flex items-start justify-between gap-4 mb-3">
                     <h3 className="text-lg font-semibold text-gray-800">
-                      Your Apology
+                      {t('session.your_apology')}
                     </h3>
                     {!isGenerating && (
                       <motion.button
@@ -236,11 +238,11 @@ export function SessionView({ cid, fingerprint, baseUrl }: SessionViewProps) {
                         whileTap={{ scale: 0.95 }}
                         onClick={handleShare}
                         className="group relative p-2 rounded-full bg-pink-500 text-white hover:bg-pink-600 transition-colors"
-                        aria-label="Share this message"
+                        aria-label={t('session.share_message')}
                       >
                         <Share2 className="w-5 h-5" />
                         <span className="absolute -bottom-10 left-1/2 -translate-x-1/2 px-2 py-1 bg-gray-900 text-white text-xs rounded opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none">
-                          Share this message
+                          {t('session.share_message')}
                         </span>
                       </motion.button>
                     )}
@@ -273,7 +275,7 @@ export function SessionView({ cid, fingerprint, baseUrl }: SessionViewProps) {
                 onClick={handleGenerateNew}
                 className="px-6 py-3 bg-pink-500 text-white font-medium rounded-lg hover:bg-pink-600 transition-colors"
               >
-                Generate New Apology
+                {t('form.generate_new')}
               </button>
             </motion.div>
           )}
@@ -281,7 +283,7 @@ export function SessionView({ cid, fingerprint, baseUrl }: SessionViewProps) {
 
         {/* Footer */}
         <div className="mt-16 text-center text-sm text-gray-500">
-          <p>Powered by AI · Made with ❤️</p>
+          <p>{t('footer')}</p>
         </div>
       </div>
 
