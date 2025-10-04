@@ -22,8 +22,8 @@ export async function GET(
     if (!message || !message.isPublic) {
       return new Response("Not found", { status: 404 });
     }
-
     const summary = message.summary || message.content;
+    const characters = summary.length;
 
     return new ImageResponse(
       (
@@ -85,7 +85,7 @@ export async function GET(
           <div
             style={{
               display: "flex",
-              fontSize: 72,
+              fontSize: characters > 20 ? 50 : 72,
               fontWeight: 900,
               color: "#EC4899",
               textAlign: "center",

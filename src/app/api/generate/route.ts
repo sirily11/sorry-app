@@ -1,4 +1,4 @@
-import { streamText } from "ai";
+import { generateText, streamText } from "ai";
 import { eq } from "drizzle-orm";
 import { db } from "@/lib/db";
 import { messages } from "@/lib/db/schema";
@@ -23,10 +23,7 @@ export async function POST(request: Request) {
       .where(eq(messages.cid, cid));
 
     if (!message) {
-      return NextResponse.json(
-        { error: "Message not found" },
-        { status: 404 },
-      );
+      return NextResponse.json({ error: "Message not found" }, { status: 404 });
     }
 
     // Verify the user is authorized to generate for this message
@@ -34,7 +31,7 @@ export async function POST(request: Request) {
     if (!isAuthenticated) {
       return NextResponse.json(
         { error: "Unauthorized - invalid session" },
-        { status: 401 },
+        { status: 401 }
       );
     }
 
@@ -44,7 +41,12 @@ export async function POST(request: Request) {
       const stream = new ReadableStream({
         start(controller) {
           controller.enqueue(
-            encoder.encode(`data: ${JSON.stringify({ type: "content", content: message.content })}\n\n`),
+            encoder.encode(
+              `data: ${JSON.stringify({
+                type: "content",
+                content: message.content,
+              })}\n\n`
+            )
           );
           controller.close();
         },
@@ -82,15 +84,18 @@ export async function POST(request: Request) {
           for await (const delta of textStream) {
             fullText += delta;
             controller.enqueue(
-              encoder.encode(`data: ${JSON.stringify({ type: "delta", content: delta })}\n\n`),
+              encoder.encode(
+                `data: ${JSON.stringify({ type: "delta", content: delta })}\n\n`
+              )
             );
           }
 
-          // Generate summary (first 20 words)
-          const words = fullText.trim().split(/\s+/);
-          const summary = words.length > 20
-            ? words.slice(0, 20).join(" ") + "..."
-            : fullText;
+          // Generate summary
+          const summaryGeneration = await generateText({
+            model: "google/gemini-2.5-flash-lite",
+            system: `Generate a summary of the given text, keep it less than 20 words. Use the same language as the text.`,
+            prompt: `Generate a summary of the following text: ${fullText}`,
+          });
 
           // Update the message with the generated content, title, and summary
           await db
@@ -98,18 +103,23 @@ export async function POST(request: Request) {
             .set({
               content: fullText,
               title: "A Heartfelt Apology",
-              summary: summary
+              summary: summaryGeneration.text,
             })
             .where(eq(messages.cid, cid));
 
           controller.enqueue(
-            encoder.encode(`data: ${JSON.stringify({ type: "done" })}\n\n`),
+            encoder.encode(`data: ${JSON.stringify({ type: "done" })}\n\n`)
           );
           controller.close();
         } catch (error) {
           console.error("Error in generation:", error);
           controller.enqueue(
-            encoder.encode(`data: ${JSON.stringify({ type: "error", error: "Generation failed" })}\n\n`),
+            encoder.encode(
+              `data: ${JSON.stringify({
+                type: "error",
+                error: "Generation failed",
+              })}\n\n`
+            )
           );
           controller.close();
         }
@@ -127,7 +137,7 @@ export async function POST(request: Request) {
     console.error("Error in POST /api/generate:", error);
     return NextResponse.json(
       { error: "Internal server error" },
-      { status: 500 },
+      { status: 500 }
     );
   }
 }
