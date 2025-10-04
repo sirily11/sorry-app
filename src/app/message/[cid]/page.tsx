@@ -4,6 +4,15 @@ import { db } from "@/lib/db";
 import { messages } from "@/lib/db/schema";
 import { PostcardView } from "./postcard-view";
 import { Metadata } from "next";
+import { cache } from "react";
+
+const getMessage = cache(async (cid: string) => {
+  const [message] = await db
+    .select()
+    .from(messages)
+    .where(eq(messages.cid, cid));
+  return message;
+});
 
 /**
  * Generates metadata for the message page
@@ -18,10 +27,7 @@ export async function generateMetadata({
   const { cid } = await params;
 
   // Fetch the message from database
-  const [message] = await db
-    .select()
-    .from(messages)
-    .where(eq(messages.cid, cid));
+  const message = await getMessage(cid);
 
   // If message doesn't exist or is not public, return default metadata
   if (!message || !message.isPublic) {
@@ -70,10 +76,7 @@ export default async function MessagePage({
   const { cid } = await params;
 
   // Fetch the message from database
-  const [message] = await db
-    .select()
-    .from(messages)
-    .where(eq(messages.cid, cid));
+  const message = await getMessage(cid);
 
   // Show 404 if message doesn't exist or is not public
   if (!message || !message.isPublic) {
