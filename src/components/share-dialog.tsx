@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useTranslation } from 'react-i18next';
+import { Loader2 } from "lucide-react";
 import { togglePublish } from "@/app/actions";
 import { getBaseUrl } from "@/lib/utils.server";
 
@@ -97,19 +98,24 @@ export function ShareDialog({
                     : t('share_dialog.private_description')}
                 </p>
               </div>
-              <button
-                onClick={handleTogglePublish}
-                disabled={isToggling}
-                className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
-                  isPublic ? "bg-pink-500" : "bg-gray-300"
-                } disabled:opacity-50`}
-              >
-                <motion.span
-                  layout
-                  className="inline-block h-4 w-4 transform rounded-full bg-white transition-transform"
-                  style={{ x: isPublic ? 20 : 4 }}
-                />
-              </button>
+              <div className="flex items-center gap-3">
+                {isToggling && (
+                  <Loader2 className="w-4 h-4 animate-spin text-pink-500" />
+                )}
+                <button
+                  onClick={handleTogglePublish}
+                  disabled={isToggling}
+                  className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
+                    isPublic ? "bg-pink-500" : "bg-gray-300"
+                  } disabled:opacity-50`}
+                >
+                  <motion.span
+                    layout
+                    className="inline-block h-4 w-4 transform rounded-full bg-white transition-transform"
+                    style={{ x: isPublic ? 20 : 4 }}
+                  />
+                </button>
+              </div>
             </div>
 
             {/* Share URL */}

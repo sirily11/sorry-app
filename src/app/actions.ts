@@ -138,3 +138,33 @@ export async function verifySessionOwnership(cid: string, fingerprint: string) {
 
   return { isOwner: true };
 }
+
+export async function updateMessageContent(cid: string, fingerprint: string, content: string) {
+  // Verify the user has a valid auth cookie
+  const isAuthenticated = await verifyAuthCookie(fingerprint);
+  if (!isAuthenticated) {
+    return { error: "Unauthorized - invalid session" };
+  }
+
+  // Verify the message belongs to this fingerprint
+  const [message] = await db
+    .select()
+    .from(messages)
+    .where(eq(messages.cid, cid));
+
+  if (!message) {
+    return { error: "Message not found" };
+  }
+
+  if (message.fingerprint !== fingerprint) {
+    return { error: "Unauthorized" };
+  }
+
+  // Update the message content
+  await db
+    .update(messages)
+    .set({ content })
+    .where(eq(messages.cid, cid));
+
+  return { success: true };
+}
