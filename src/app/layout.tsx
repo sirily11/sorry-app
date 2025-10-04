@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { I18nProvider } from "@/components/i18n-provider";
 import "./globals.css";
+import { AppBar } from "@/components/app-bar";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -26,9 +27,10 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased bg-gradient-to-br from-pink-50 via-white to-purple-50 min-h-screen`}
       >
         <I18nProvider>
+          <AppBar />
           {children}
         </I18nProvider>
       </body>

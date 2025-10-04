@@ -1,25 +1,25 @@
-'use client';
+"use client";
 
-import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
-import { motion, AnimatePresence } from 'framer-motion';
-import FingerprintJS from '@fingerprintjs/fingerprintjs';
-import { useTranslation } from 'react-i18next';
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { motion, AnimatePresence } from "framer-motion";
+import FingerprintJS from "@fingerprintjs/fingerprintjs";
+import { useTranslation } from "react-i18next";
 import {
   generateApology,
   getRateLimitMax,
   getRemainingGenerations,
-} from '@/app/actions';
+} from "@/app/actions";
 
 export function SorryForm() {
   const router = useRouter();
-  const { t } = useTranslation('common');
-  const [fingerprint, setFingerprint] = useState<string>('');
-  const [scenario, setScenario] = useState('');
+  const { t } = useTranslation("common");
+  const [fingerprint, setFingerprint] = useState<string>("");
+  const [scenario, setScenario] = useState("");
   const [isGenerating, setIsGenerating] = useState(false);
   const [remaining, setRemaining] = useState<number | null>(null);
   const [maxLimit, setMaxLimit] = useState<number | null>(null);
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
 
   useEffect(() => {
     // Initialize fingerprint and fetch remaining generations
@@ -45,11 +45,11 @@ export function SorryForm() {
     if (!scenario.trim() || !fingerprint) return;
 
     setIsGenerating(true);
-    setError('');
+    setError("");
 
     try {
       // Get custom prompt from localStorage
-      const customPrompt = localStorage.getItem('customPrompt') || '';
+      const customPrompt = localStorage.getItem("customPrompt") || "";
 
       const result = await generateApology(fingerprint, scenario, customPrompt);
 
@@ -71,8 +71,8 @@ export function SorryForm() {
         router.push(`/session/${result.cid}`);
       }
     } catch (err) {
-      setError('Failed to generate apology. Please try again.');
-      console.error('Error in handleGenerate:', err);
+      setError("Failed to generate apology. Please try again.");
+      console.error("Error in handleGenerate:", err);
       setIsGenerating(false);
     }
   };
@@ -89,20 +89,20 @@ export function SorryForm() {
           <div className="flex items-center justify-center gap-2">
             <motion.div
               animate={{ rotate: 360 }}
-              transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}
+              transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
               className="w-5 h-5 border-2 border-gray-300 border-t-pink-500 rounded-full"
             />
-            <p className="text-sm text-gray-600">{t('loading')}</p>
+            <p className="text-sm text-gray-600">{t("loading")}</p>
           </div>
         ) : (
           <p className="text-sm text-gray-600">
-            {t('form.remaining_today')}{' '}
+            {t("form.remaining_today")}{" "}
             <motion.span
               key={remaining}
-              initial={{ scale: 1.5, color: '#10b981' }}
+              initial={{ scale: 1.5, color: "#10b981" }}
               animate={{
                 scale: 1,
-                color: remaining <= 1 ? '#ef4444' : '#000000',
+                color: remaining <= 1 ? "#ef4444" : "#000000",
               }}
               className="font-bold text-lg"
             >
@@ -125,13 +125,13 @@ export function SorryForm() {
             htmlFor="scenario"
             className="block text-sm font-medium text-gray-700 mb-2"
           >
-            {t('form.label')}
+            {t("form.label")}
           </label>
           <textarea
             id="scenario"
             value={scenario}
             onChange={(e) => setScenario(e.target.value)}
-            placeholder={t('form.placeholder')}
+            placeholder={t("form.placeholder")}
             className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-pink-500 focus:border-transparent resize-none"
             rows={4}
             disabled={isGenerating}
@@ -148,7 +148,9 @@ export function SorryForm() {
           }
           className="w-full px-6 py-3 bg-pink-500 text-white font-medium rounded-lg hover:bg-pink-600 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors"
         >
-          {isGenerating ? t('form.button_generating') : t('form.button_generate')}
+          {isGenerating
+            ? t("form.button_generating")
+            : t("form.button_generate")}
         </button>
       </motion.div>
 
@@ -159,7 +161,7 @@ export function SorryForm() {
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
-            className="p-4 bg-red-50 border border-red-200 rounded-lg text-red-700"
+            className="p-4"
           >
             {error}
           </motion.div>
