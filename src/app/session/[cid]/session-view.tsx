@@ -7,6 +7,7 @@ import { Share2 } from "lucide-react";
 import { useTranslation } from 'react-i18next';
 import { getMessageForSession } from "@/app/actions";
 import { ShareDialog } from "@/components/share-dialog";
+import { EditableMessageContent } from "@/components/editable-message-content";
 
 interface SessionViewProps {
   cid: string;
@@ -247,9 +248,9 @@ export function SessionView({ cid, fingerprint, baseUrl }: SessionViewProps) {
                       </motion.button>
                     )}
                   </div>
-                  <div className="text-gray-700 whitespace-pre-wrap leading-relaxed">
-                    {generatedMessage}
-                    {isGenerating && (
+                  {isGenerating ? (
+                    <div className="text-gray-700 whitespace-pre-wrap leading-relaxed">
+                      {generatedMessage}
                       <motion.span
                         animate={{ opacity: [1, 0] }}
                         transition={{ duration: 0.8, repeat: Infinity }}
@@ -257,8 +258,15 @@ export function SessionView({ cid, fingerprint, baseUrl }: SessionViewProps) {
                       >
                         ▋
                       </motion.span>
-                    )}
-                  </div>
+                    </div>
+                  ) : (
+                    <EditableMessageContent
+                      cid={cid}
+                      fingerprint={fingerprint}
+                      initialContent={generatedMessage}
+                      isOwner={true}
+                    />
+                  )}
                 </motion.div>
               </motion.div>
             )}
