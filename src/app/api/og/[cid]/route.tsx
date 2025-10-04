@@ -35,7 +35,8 @@ export async function GET(
             flexDirection: "column",
             alignItems: "center",
             justifyContent: "center",
-            background: "linear-gradient(135deg, #FDF2F8 0%, #FFFFFF 50%, #FAF5FF 100%)",
+            background:
+              "linear-gradient(135deg, #FDF2F8 0%, #FFFFFF 50%, #FAF5FF 100%)",
             fontFamily: "system-ui, sans-serif",
             padding: "100px 120px",
             position: "relative",
