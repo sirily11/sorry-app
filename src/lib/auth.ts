@@ -1,5 +1,5 @@
 import { cookies } from "next/headers";
-import { createHmac } from "crypto";
+import { createHmac, createHash } from "crypto";
 
 const COOKIE_NAME = "apology_session";
 const COOKIE_MAX_AGE = 60 * 60 * 24 * 30; // 30 days
@@ -47,4 +47,26 @@ export async function verifyAuthCookie(fingerprint: string): Promise<boolean> {
 
   const verifiedFingerprint = verifyFingerprint(token);
   return verifiedFingerprint === fingerprint;
+}
+
+// Get fingerprint from authenticated session cookie
+export async function getAuthenticatedFingerprint(): Promise<string | null> {
+  const cookieStore = await cookies();
+  const token = cookieStore.get(COOKIE_NAME)?.value;
+
+  if (!token) return null;
+
+  return verifyFingerprint(token);
+}
+
+// Generate fingerprint from request metadata (IP, user-agent, etc.)
+export function generateFingerprint(request: Request): string {
+  const forwarded = request.headers.get("x-forwarded-for");
+  const ip = forwarded ? forwarded.split(",")[0] : request.headers.get("x-real-ip") || "unknown";
+  const userAgent = request.headers.get("user-agent") || "unknown";
+
+  // Combine IP and user-agent to create a unique fingerprint
+  const hash = createHash("sha256");
+  hash.update(`${ip}:${userAgent}`);
+  return hash.digest("hex");
 }
