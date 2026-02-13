@@ -3,8 +3,7 @@ import { eq } from "drizzle-orm";
 import { db } from "@/lib/db";
 import { messages } from "@/lib/db/schema";
 import { NextResponse } from "next/server";
-import { verifyAuthCookie } from "@/lib/auth";
-import { cookies } from "next/headers";
+import { getAuthenticatedFingerprint } from "@/lib/auth";
 
 export const maxDuration = 30;
 
@@ -27,8 +26,9 @@ export async function POST(request: Request) {
     }
 
     // Verify the user is authorized to generate for this message
-    const isAuthenticated = await verifyAuthCookie(message.fingerprint);
-    if (!isAuthenticated) {
+    // Support both cookie-based auth (mobile) and fingerprint-based auth (web)
+    const authenticatedFingerprint = await getAuthenticatedFingerprint();
+    if (!authenticatedFingerprint || authenticatedFingerprint !== message.fingerprint) {
       return NextResponse.json(
         { error: "Unauthorized - invalid session" },
         { status: 401 }
